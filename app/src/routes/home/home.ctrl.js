@@ -1,14 +1,15 @@
 "use strict";
+const {
+    use
+} = require(".");
+const UserStorage = require("../../model/UserStorage");
 //urㅣ 로 옮긴 후 보여주는 기능을 해주는 module
-const users = {
-    id: ["lynnet", "bruno", "ian"],
-    pwd: ["1234","12345", "123456"],
-};
+
 
 const output = {
     home: (req, res) => {
         res.render("home/index")
-    }, 
+    },
 
     login: (req, res) => {
         res.render("home/login")
@@ -16,23 +17,34 @@ const output = {
 }
 
 const process = {
-    login: (req,res) => {
-       const id = req.body.id,
-        pwd = req.body.pwd;
+    login: (req, res) => {
+        const id = req.body.id,
+            psword = req.body.psword;
 
-     if(users.id.includes(id)){
-        const idx =users.id.indexOf(id);
-        if(users.pwd[idx] ===pwd){
-            return res.json({
-                success: true,
-            })
+        const users = UserStorage.getUsers("id", "psword");
+
+        const response = {};
+        if (users.id.includes(id)) {
+            const idx = users.id.indexOf(id);
+            if (users.psword[idx] === psword) {
+                return res.json({
+                    success: true,
+                });
+                response.success = true;
+                return res.json(response);
+            }
         }
-     }
-     return res.json({
-        msg: "로그인에 실패했습니다.",
-     })
+
+        return res.json({
+            success: false,
+            msg: "로그인에 실패하셨습니다.",
+        });
+        response.success = false;
+        response.msg = "로그인에 실패하셨습니다.";
+        return res.json(response);
     },
-}
+};
+
 
 module.exports = {
     output,
