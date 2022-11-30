@@ -2,33 +2,40 @@
 
 const id = document.querySelector("#id"),
     pwd = document.querySelector("#pwd"),
-    loginBtn = document.querySelector("#button");
+    name = document.querySelector("#name"),
+    confirmPwd = document.querySelector("#pwd-confirm"),
+    registerBtn = document.querySelector("#button");
+   
 
 
-loginBtn.addEventListener("click", login);
+registerBtn.addEventListener("click", register);
 
-function login() {
+function register() {
     const req = {
         id: id.value,
+        name:name.value,
         pwd: pwd.value,
+        confirmPwd:confirmPwd.value,
     };
 
-    fetch("/login", {
+
+    fetch("/register", {
         method: "POST",
         headers:{
             "Content-Type" : "application/json",
         },
         body: JSON.stringify(req),
-    }).then((res) => res.json())
+    })
+    .then((res) => res.json())
     .then((res) => {
         if(res.success) {
-            location.href="/";
+            location.href="/login";
         }else {
             alert(res.msg);
         }
     })
     .catch((err) =>{
-        console.error("로그인 중 에러 발생");
+        console.error("회원가입 중 에러 발생");
     });
 
 }
